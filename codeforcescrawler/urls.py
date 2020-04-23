@@ -9,4 +9,6 @@ urlpatterns = [
     path('special/',views.special,name='special'),
     path('login/',include('login.urls')),
     path('logout/', views.user_logout, name='logout'),
+    path('time-table/', views.time_table, name='time_table'),
+    path('contest-stats/',views.contest_stats, name='contest_stats'),
 ] 

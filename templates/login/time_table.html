@@ -1,0 +1,23 @@
+{% extends "login/base.html" %}
+
+{% block title %}
+Time-Table
+{% endblock %}
+
+{% block body_block %}
+<h1>Time Table</h1>
+
+<h4>Contest Details : </h4>
+
+{% for item in cols %}
+        <br /><br />
+        
+        <h6>Name : {{item.0}}</h6>
+        <h6>Writers : {{item.1}}</h6>
+        <h6>Start : {{item.2}}</h6>
+        <h6>Duration : {{item.3}}</h6>
+        <h6>{{item.4}}</h6>
+    {% endfor %}
+
+
+{% endblock %}
