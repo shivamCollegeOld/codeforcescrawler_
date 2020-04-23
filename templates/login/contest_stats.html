@@ -1,0 +1,17 @@
+{% extends "login/base.html" %}
+
+{% block title %}
+User-Profile
+{% endblock %}
+
+{% block body_block %}
+
+    <h4>Contest Stats for {{Handle}} : </h4>
+
+    <h6>No. of Contests : {{No_of_Contests}}</h6>
+    <h6>Best Rank : {{Best_Rank}}</h6>
+    <h6>Worst Rank : {{Worst_Rank}}</h6>
+    <h6>Max Up : {{Max_Up}}</h6>
+    <h6>Max Down : {{Max_Down}}</h6>
+
+{% endblock %}
