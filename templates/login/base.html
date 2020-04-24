@@ -14,9 +14,9 @@
 {# Django Home Link / Admin Link / Register Link#}
           <li><a class="navbar-brand" href="{% url 'index' %}">Codeforces Crawler</a></li>
           <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
-          <li><a class="navbar-link" href="{% url 'login:register' %}">Register</a></li> 
+          <li><a class="navbar-link" href="{% url 'login:register' %}">Register</a></li>
           <li><a class="navbar-link" href="{% url 'contest_stats' %}">Contest Stats</a></li>
-          <li><a class="navbar-link" href="{% url 'time_table' %}">Time Table</a></li>    
+          <li><a class="navbar-link" href="{% url 'time_table' %}">Time Table</a></li>
           {# Some logic on what to display for last item#}
           {% if user.is_authenticated %}
             <li><a href="{% url 'logout' %}">Logout</a></li>
@@ -30,5 +30,9 @@
     {% block body_block %}
     {% endblock %}
     </div>
+
+
+    
+
   </body>
 </html>

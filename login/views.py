@@ -9,6 +9,9 @@ from bs4 import BeautifulSoup
 import requests
 from lxml import html
 
+import pandas as pd
+import matplotlib.pyplot as plt, mpld3
+
 
 def index(request):
     return render(request,'login/index.html')
@@ -21,6 +24,8 @@ def special(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -47,6 +52,7 @@ def register(request):
                            'profile_form':profile_form,
                            'registered':registered})
 
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -65,36 +71,65 @@ def user_login(request):
     else:
         return render(request, 'login/login.html', {})
 
+
 def time_table(request):
     fcd = fetch_time_table()
 
     return render(request, "login/time_table.html", {"cols" : fcd})
 
+
 def fetch_time_table():
 
     url = "https://codeforces.com/contests"
-    page = requests.get(url) 
+    page = requests.get(url)
 
     bs=BeautifulSoup(page.content, 'html.parser')
     table_body = bs.find_all('table', class_="")
-    
+
     cnt = 0
     for item in table_body:
         rows = item.find_all('tr')
         for row in rows:
             cols=row.find_all('td')
             cols=[x.text.strip() for x in cols]
-            
+
             if len(cols) == 0:
                 cnt = cnt + 1
-                
+
             if cnt < 2 and len(cols)>=3:
                 yield cols
 
+
 def contest_stats(request):
-    handle = request.user.get_username()
+    profile = request.user.userprofileinfo
+    handle = profile.cf_handle
     fcs = fetch_contest_stats(handle)
-    return render(request, 'login/contest_stats.html', fcs)
+
+    submissionsFigure(request)
+
+    return render(request, 'login/figure_html.html', fcs)
+
+def submissionsFigure(request):
+    profile = request.user.userprofileinfo
+    handle = profile.cf_handle
+
+    df = fetchSubmissionDetails(handle)
+
+    lang_occurence_data = df['Lang'].value_counts()
+
+    labels = lang_occurence_data.keys().tolist()
+    sizes = lang_occurence_data.values
+
+    fig = plt.figure()
+    plt.pie(sizes, labels=labels)
+
+    html_fig = mpld3.fig_to_html(fig)
+
+    html_fig = "{% extends 'login/base.html' %} \n {% block body_block %} \n" + html_fig + "{% endblock %}"
+
+    file = open('templates/login/figure_html.html', "w")
+    file.write(html_fig)
+    file.close()
 
 def fetch_contest_stats(handle):
     start_url = "https://www.codeforces.com/"
@@ -105,6 +140,7 @@ def fetch_contest_stats(handle):
 
     page = requests.get(contests_url)
     soup = BeautifulSoup(page.content, 'lxml')
+
 
     table = soup.find('table', class_='tablesorter user-contests-table')
     tbody = table.find('tbody')
@@ -129,7 +165,7 @@ def fetch_contest_stats(handle):
 
     mydict = {
         'Handle' : cf_handle,
-        'No_of_Contests' : ROWS[0].find('td').text, 
+        'No_of_Contests' : ROWS[0].find('td').text,
         'Best_Rank' : rank_list[0],
         'Worst_Rank' : rank_list[len(rank_list)-1],
         'Max_Up' : delta_rating[len(delta_rating)-1],
@@ -139,19 +175,16 @@ def fetch_contest_stats(handle):
     return mydict
 
 
+def fetchSubmissionDetails(handle):
+    base_url = "https://codeforces.com/submissions/"
+    submits_url = base_url + "zeproffesor"
+    page = requests.get(submits_url)
 
+    full_content = BeautifulSoup(page.content, 'html.parser')
 
+    table = full_content.find_all('table')
 
+    df = pd.read_html(str(table[5]))
+    df = df[0]
 
-
-
-
-
-
-
-
-
-
-
-
-
+    return df
