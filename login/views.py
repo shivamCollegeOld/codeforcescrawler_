@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from . import models
 
 from bs4 import BeautifulSoup
 import requests
@@ -92,7 +93,16 @@ def fetch_time_table():
                 yield cols
 
 def contest_stats(request):
-    handle = request.user.get_username()
+    username = request.user.get_username()
+
+    jlist = list(models.UserProfileInfo.objects.all())
+
+    # OneToOne Field hai user in UserProfileInfor model to usko access karne
+    # ka tareeka!!!    
+    profile = request.user.userprofileinfo
+    handle = profile.cf_handle
+    
+
     fcs = fetch_contest_stats(handle)
     return render(request, 'login/contest_stats.html', fcs)
 
@@ -100,7 +110,7 @@ def fetch_contest_stats(handle):
     start_url = "https://www.codeforces.com/"
 
     cf_handle = handle
-    profile_url = start_url+'profile/'+cf_handle
+    # profile_url = start_url+'profile/'+cf_handle
     contests_url = start_url+'contests/with/'+cf_handle
 
     page = requests.get(contests_url)
@@ -116,8 +126,8 @@ def fetch_contest_stats(handle):
 
     for item in ROWS:
         elements = item.find_all('td')
-        contest_no = int(elements[0].text)
-        contest_name = elements[1].find('a').text
+        # contest_no = int(elements[0].text)
+        # contest_name = elements[1].find('a').text
         rank = int(elements[2].find('a').text)
         rating_change = int(elements[4].text)
 
@@ -137,9 +147,6 @@ def fetch_contest_stats(handle):
     }
 
     return mydict
-
-
-
 
 
 
