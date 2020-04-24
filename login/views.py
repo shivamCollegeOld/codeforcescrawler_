@@ -107,7 +107,7 @@ def contest_stats(request):
 
     submissionsFigure(request)
 
-    return render(request, 'login/base.html', fcs)
+    return render(request, 'login/figure_html.html', fcs)
 
 def submissionsFigure(request):
     profile = request.user.userprofileinfo
@@ -125,7 +125,7 @@ def submissionsFigure(request):
 
     html_fig = mpld3.fig_to_html(fig)
 
-    html_fig = "{% extends 'login/base.html' %} '\n'" + "{% block content %} '\n'" + html_fig + "{% endblock %}"
+    html_fig = "{% extends 'login/base.html' %} \n {% block body_block %} \n" + html_fig + "{% endblock %}"
 
     file = open('templates/login/figure_html.html', "w")
     file.write(html_fig)
