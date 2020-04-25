@@ -227,12 +227,18 @@ def get_submission_stats(handle):
     page = requests.get("https://codeforces.com/submissions/" + handle)
 
     soup = BeautifulSoup(page.content, 'lxml')
-    div = soup.find_all('div', class_='pagination')[1]
+    div = soup.find_all('div', class_='pagination')
 
-    ul = div.find('ul')
-    li = ul.find_all('li')
+    if len(div) == 1:
+        t=1
+    
+    else:
+        ul = div[1].find('ul')
+        li = ul.find_all('li')
 
-    t = int(li[-2].text)
+        t = int(li[-2].text)
+    
+    
     val = pd.Series()
     verd = pd.Series()
     lev = pd.Series()
