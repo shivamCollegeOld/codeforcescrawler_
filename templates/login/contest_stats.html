@@ -5,14 +5,65 @@ User-Profile
 {% endblock %}
 
 {% block body_block %}
+    
+    <div id="languages_chart">
+        {{output_languages | safe}}
+    </div>
 
-    <h4>Contest Stats for {{Handle}} : </h4>
+    <div id="verdicts_chart">
+        {{output_verdicts | safe}}
+    </div>
 
-    <h6>No. of Contests : {{No_of_Contests}}</h6>
-    <h6>Best Rank : {{Best_Rank}}</h6>
-    <h6>Worst Rank : {{Worst_Rank}}</h6>
-    <h6>Max Up : {{Max_Up}}</h6>
-    <h6>Max Down : {{Max_Down}}</h6>
+    <div id="levels_chart">
+        {{output_levels | safe}}
+    </div>
+
+    <div class="w-25 p-3">
+        <table class="table table-striped">
+        
+            <thead>
+                <tr class="bg-primary">
+                    <th scope="col">Contest Stats </th>
+                    <th scope="col">{{Handle}}</th>
+                </tr>
+            </thead>
+    
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        Best Rank 
+                    </th>
+    
+                    <td> {{Best_Rank}} </td>
+                </tr>
+    
+                <tr>
+                    <th scope="row">
+                        Worst Rank
+                    </th>
+    
+                    <td> {{Worst_Rank}} </td>
+                </tr>
+    
+                <tr>
+                    <th scope="row">
+                        Max Up
+                    </th>
+    
+                    <td> {{Max_Up}} </td>
+                </tr>
+    
+                <tr>
+                    <th scope="row">
+                        Max Down
+                    </th>
+    
+                    <td> {{Max_Down}} </td>
+                </tr>
+            </tbody>
+        
+        </table>
+    </div>
 
 
 {% endblock %}

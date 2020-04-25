@@ -12,3 +12,6 @@ class UserProfileInfoForm(forms.ModelForm):
      class Meta():
          model = UserProfileInfo
          fields = ('cf_handle','profile_pic')
+
+class SearchHandle(forms.Form):
+    cf_handle = forms.CharField(label="Search Handle", max_length=35)
