@@ -1,0 +1,16 @@
+{% extends "login/base.html" %}
+
+{% block title %}
+Search-Handle
+{% endblock %}
+
+{% block body_block %}
+
+    <form method="post" action="/login/search-handle/">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit", name="save">Submit</button>
+        
+    </form>
+
+{% endblock %}

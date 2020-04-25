@@ -6,19 +6,37 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+    
+    {% load static %}
+      <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.js" %}"></script>
+      <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
+      <script type="text/javascript" src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+
   </head>
   <body>
+    
     <nav class="navbar navbar-default navbar-static-top " >
       <div class="container">
         <ul class="nav navbar-nav">
-{# Django Home Link / Admin Link / Register Link#}
+          {# Django Home Link / Admin Link / Register Link#}
+
           <li><a class="navbar-brand" href="{% url 'index' %}">Codeforces Crawler</a></li>
           <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
-          <li><a class="navbar-link" href="{% url 'login:register' %}">Register</a></li> 
-          <li><a class="navbar-link" href="{% url 'contest_stats' %}">Contest Stats</a></li>
-          <li><a class="navbar-link" href="{% url 'time_table' %}">Time Table</a></li>    
-          {# Some logic on what to display for last item#}
+
+          {% if not user.is_authenticated %}
+            <li><a class="navbar-link" href="{% url 'login:register' %}">Register</a></li> 
+          {% endif %}
+
           {% if user.is_authenticated %}
+            <li><a class="navbar-link" href="{% url 'contest_stats' %}">Contest Stats</a></li>
+          {% endif %}
+          
+          <li><a class="navbar-link" href="{% url 'time_table' %}">Time Table</a></li>  
+
+          {# Some logic on what to display for last item#}
+
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'search_handle' %}">Search Handle</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
           {% else %}
             <li><a class="navbar-link" href="{% url 'login:user_login' %}">Login</a></li>
@@ -30,5 +48,7 @@
     {% block body_block %}
     {% endblock %}
     </div>
+
+
   </body>
 </html>
