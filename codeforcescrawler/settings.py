@@ -128,3 +128,5 @@ MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
 LOGIN_URL = '/codeforcescrawler_/user_login/'
+
+AUTH_PROFILE_MODULE = 'login.UserProfileInfo'

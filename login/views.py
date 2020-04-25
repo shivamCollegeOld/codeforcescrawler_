@@ -15,6 +15,7 @@ from lxml import html
 import pandas as pd
 import matplotlib.pyplot as plt, mpld3
 
+
 from collections import OrderedDict
 from . import fusioncharts
 
@@ -29,6 +30,8 @@ def special(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -55,6 +58,7 @@ def register(request):
                            'profile_form':profile_form,
                            'registered':registered})
 
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -73,33 +77,37 @@ def user_login(request):
     else:
         return render(request, 'login/login.html', {})
 
+
 def time_table(request):
     fcd = fetch_time_table()
     
     return render(request, "login/time_table.html", {"cols" : fcd})
 
+
 def fetch_time_table():
 
     url = "https://codeforces.com/contests"
-    page = requests.get(url) 
+    page = requests.get(url)
 
     bs=BeautifulSoup(page.content, 'html.parser')
     table_body = bs.find_all('table', class_="")
-    
+
     cnt = 0
     for item in table_body:
         rows = item.find_all('tr')
         for row in rows:
             cols=row.find_all('td')
             cols=[x.text.strip() for x in cols]
-            
+
             if len(cols) == 0:
                 cnt = cnt + 1
-                
+
             if cnt < 2 and len(cols)>=3:
                 yield cols
 
+
 def contest_stats(request):
+
     # OneToOne Field hai user in UserProfileInfo model to usko access karne
     # ka tareeka!!!    
     profile = request.user.userprofileinfo
@@ -115,6 +123,37 @@ def contest_stats(request):
 
     return render(request, 'login/contest_stats.html', fcs)
 
+    profile = request.user.userprofileinfo
+    handle = profile.cf_handle
+    fcs = fetch_contest_stats(handle)
+
+    submissionsFigure(request)
+
+    return render(request, 'login/figure_html.html', fcs)
+
+def submissionsFigure(request):
+    profile = request.user.userprofileinfo
+    handle = profile.cf_handle
+
+    df = fetchSubmissionDetails(handle)
+
+    lang_occurence_data = df['Lang'].value_counts()
+
+    labels = lang_occurence_data.keys().tolist()
+    sizes = lang_occurence_data.values
+
+    fig = plt.figure()
+    plt.pie(sizes, labels=labels)
+
+    html_fig = mpld3.fig_to_html(fig)
+
+    html_fig = "{% extends 'login/base.html' %} \n {% block body_block %} \n" + html_fig + "{% endblock %}"
+
+    file = open('templates/login/figure_html.html', "w")
+    file.write(html_fig)
+    file.close()
+
+
 def fetch_contest_stats(handle):
     start_url = "https://www.codeforces.com/"
 
@@ -123,6 +162,7 @@ def fetch_contest_stats(handle):
 
     page = requests.get(contests_url)
     soup = BeautifulSoup(page.content, 'lxml')
+
 
     table = soup.find('table', class_='tablesorter user-contests-table')
     tbody = table.find('tbody')
@@ -145,7 +185,7 @@ def fetch_contest_stats(handle):
 
     mydict = {
         'Handle' : cf_handle,
-        'No_of_Contests' : ROWS[0].find('td').text, 
+        'No_of_Contests' : ROWS[0].find('td').text,
         'Best_Rank' : rank_list[0],
         'Worst_Rank' : rank_list[len(rank_list)-1],
         'Max_Up' : delta_rating[len(delta_rating)-1],
@@ -157,6 +197,7 @@ def fetch_contest_stats(handle):
 def search_handle(request):
     if request.method == "POST":
         form = SearchHandle(request.POST)
+
 
         if form.is_valid():
             handle = form.cleaned_data["cf_handle"]
@@ -346,6 +387,8 @@ def display_stats_levels(handle):
     graph2D = fusioncharts.FusionCharts("column2d", "Levels Chart", "700", "500", "levels_chart", "json", datasource)
 
     return graph2D  
+
+
 
 
 

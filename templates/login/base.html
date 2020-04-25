@@ -23,6 +23,7 @@
           <li><a class="navbar-brand" href="{% url 'index' %}">Codeforces Crawler</a></li>
           <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
 
+
           {% if not user.is_authenticated %}
             <li><a class="navbar-link" href="{% url 'login:register' %}">Register</a></li> 
           {% endif %}
@@ -32,6 +33,7 @@
           {% endif %}
           
           <li><a class="navbar-link" href="{% url 'time_table' %}">Time Table</a></li>  
+
 
           {# Some logic on what to display for last item#}
 
@@ -48,6 +50,7 @@
     {% block body_block %}
     {% endblock %}
     </div>
+
 
 
   </body>
