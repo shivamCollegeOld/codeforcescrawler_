@@ -182,6 +182,7 @@ def search_handle(request):
 def get_submission_stats(handle):
     languages.objects.all().delete()
     verdicts.objects.all().delete()
+    levels.objects.all().delete()
 
     page = requests.get("https://codeforces.com/submissions/" + handle)
 
